@@ -1,68 +1,25 @@
 const express = require("express");
 const app = express();
-const mysql = require("mysql");
+const db = require("./config/databaseConfig")
 const port = 5555;
+const bodyParser = require("body-parser");
+const controllers = require("./controllers/api");
 
 // Create connection
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "defaria123",
-  database: "demonstrationdb",
-});
-
 db.connect((err) => {
   if (err) {
+    console.log(err.message);
     throw err;
   }
   console.log("MySql Connected");
 });
 
+app.use(express.text());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(controllers);
 
-// ////////////
-// ENDPOINTS
-// ////////////
-
-app.get("/api/population/:state/:city", async (req, res) => {
-  const state = req.params.state.toLowerCase();
-  const city = req.params.city.toLowerCase();
-
-  const select = `SELECT * FROM populationcensus WHERE city = ${city}`;
-
-  try {
-    if (data[state] && data[state][city]) 
-      db.query(select, (err, results, fields) => {
-        if (err) {
-          console.log(err.message);
-        }
-        res.status(200).json(results);
-      });
-    
-  } catch {
-    res.status(400).json({ error: "State/City not found" });
-  }
-});
-
-// PUT route to update or create population data
-app.put("/api/population/:state/:city", (req, res) => {
-  const state = req.params.state.toLowerCase();
-  const city = req.params.city.toLowerCase();
-  const population = parseInt(req.body);
-
-  if (isNaN(population) || population < 0) {
-    res.status(400).json({ error: "Invalid population data" });
-  } else {
-    if (!data[state]) {
-      data[state] = {};
-    }
-
-    data[state][city] = population;
-
-    const status = data[state][city] === population ? 200 : 201;
-    res.status(status).json({ message: "Population data updated" });
-  }
-});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
