@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const db = require("../../config/databaseConfig");
+const db = require("../../../config/databaseConfig");
 
 function addNewValues(state, city, population) {
   const addData = `INSERT INTO populationcensus(state, city, population) VALUES ('${state}', '${city}', ${population})`;
@@ -54,8 +54,7 @@ router.put("/:state/:city", async (req, res) => {
     if (results.affectedRows === 0) {
       addNewValues(state, city, population);
       res.status(201).json({
-        message:
-          "New State and City added to the System",
+        message: "New State and City added to the System",
       });
       return;
     }

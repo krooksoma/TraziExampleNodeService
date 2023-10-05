@@ -3,7 +3,7 @@ const app = express();
 const db = require("./config/databaseConfig")
 const port = 5555;
 const bodyParser = require("body-parser");
-const controllers = require("./controllers/api");
+const controllers = require("./controllers");
 
 // Create connection
 
